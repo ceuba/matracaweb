@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<form name="form">
+
+	<a href="javascript:void(0)" onclick="mudar()">MUDAR DE COR</a>
+	<div contenteditable=true style="font-size: 50px" id="txt"></div>
+
+</form>
+<script type="text/javascript">
+	function mudar() {
+		var tagcolor = $("#color")
+		var tagTexto = $('#txt')
+		if(tagcolor.length > 0){
+			
+			var textoOfTag = tagcolor.text()
+			tagcolor.remove()
+			tagTexto.text(tagTexto.text() + textoOfTag)
+		}
+		else{
+			var texto = tagTexto.text()
+			var splitted = texto.split(" ");
+			var last = splitted.splice(splitted.length-1)
+			last = "<font color= 'red' id='color'>" + last + "</font>"
+			var newtext = splitted.join(" ")
+			$('#txt').html(newtext + " " +  last)
+		}
+	}
+	
+</script>
+
+
+</body>
+</html>
