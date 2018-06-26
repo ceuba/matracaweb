@@ -10,7 +10,7 @@
 </head>
 <body>
 	<textarea id="some-textarea" placeholder="Enter text ..."></textarea>
-
+	<button onclick="lerTexto()">Ler Texto</button>
 
 <script type="text/javascript">
 	$('#some-textarea').wysihtml5({"font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
@@ -80,6 +80,11 @@
     			{ text: palavra, speed: 90, wordgap:10}
 			]
 		)
+	}
+	function lerTexto() {
+		var editor = $('.wysihtml5-sandbox').contents().find('body');
+		var texto = editor[0].innerText;
+		meSpeak.speak(texto, {speed: 130, wordgap:5});
 	}
 </script>
 
