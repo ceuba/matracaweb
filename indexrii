@@ -1,0 +1,114 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="bootstrap-wysihtml5-0.0.2.css"></link>
+<link rel="stylesheet" type="text/css" href="libs/css/bootstrap.min.css"></link>
+<script src="libs/js/wysihtml5-0.3.0_rc2.js"></script>
+<script src="libs/js/jquery-1.7.1.min.js"></script>
+<script src="libs/js/bootstrap.min.js"></script>
+<script src="libs/js/mespeak.js"></script>
+<script src="bootstrap-wysihtml5-0.0.2.js"></script>
+</head>
+<body>
+	<textarea id="some-textarea" placeholder="Enter text ..."></textarea>
+	<button onclick="lerTexto()">Ler Texto</button>
+
+<script type="text/javascript">
+	$('#some-textarea').wysihtml5({"font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
+	"emphasis": true, //Italics, bold, etc. Default true
+	"lists": false, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
+	"html": false, //Button which allows you to edit the generated HTML. Default false
+	"link": false, //Button to insert a link. Default true
+	"image": false, //Button to insert an image. Default true,
+	"color": false //Button to change color of font  
+	});
+	var editor = $('.wysihtml5-sandbox').contents().find('body')
+	editor.on("keypress",function(e) {
+        if (e.key === ' ' || e.key === 'Spacebar') {
+    		var texto = editor[0].innerText
+    		var splitted = texto.split(" ");
+			var last = splitted.splice(splitted.length-1)[0]
+			if(!checkPalavra(last)){
+				mudar()
+				e.preventDefault()
+			}
+    	}
+    });
+</script>
+
+<script type="text/javascript">
+	function checkPalavra(palavra)
+	{
+		for (var i in dict) {
+			if(dict[i].trim() == palavra){
+				return true;
+			}
+		}
+		return false;
+	}
+	function readTextFile(file)
+	{
+	    var rawFile = new XMLHttpRequest();
+	    rawFile.open("GET", file, true);
+	    rawFile.overrideMimeType('text/plain; charset=iso-8859-1');
+	    rawFile.onreadystatechange = function ()
+	    {
+	        if(rawFile.readyState === 4)
+	        {
+	            if(rawFile.status === 200 || rawFile.status == 0)
+	            {
+	                allText = rawFile.responseText;
+	                dict = allText.split('\n');
+	                dict.push("ola")
+	            }
+	        }
+	    }
+	    rawFile.send(null);
+	}
+	var dict
+	readTextFile("libs/Brazil.dic")
+</script>
+
+<script type="text/javascript">
+	meSpeak.loadConfig("libs/js/mespeak_config.json");
+	meSpeak.loadVoice('libs/js/pt.json');
+	function palavraErrada(palavra) {
+		palavra = palavra.split("").join(" ");
+		meSpeak.speakMultipart(
+  			[
+    			{ text: "palavra incorreta, você digitou:", speed: 130, wordgap:5},
+    			{ text: palavra, speed: 90, wordgap:10}
+			]
+		)
+	}
+	function lerTexto() {
+		var editor = $('.wysihtml5-sandbox').contents().find('body');
+		var texto = editor[0].innerText;
+		meSpeak.speak(texto, {speed: 130, wordgap:5});
+	}
+</script>
+
+<script type="text/javascript">
+	function mudar() {
+		var tagcolor = $('.wysihtml5-sandbox').contents().find('#color')
+		var tagTexto = $('.wysihtml5-sandbox').contents().find('body')[0]
+		if(tagcolor.length > 0){
+			
+			var textoOfTag = tagcolor.text()
+			tagcolor.remove()
+			tagTexto.innerText = tagTexto.innerText + " " + textoOfTag
+		}
+		else{
+			var texto = tagTexto.innerText
+			var splitted = texto.split(" ");
+			var last = splitted.splice(splitted.length-1)
+			palavraErrada(last[0])
+			last = "<font color= 'red' id='color'>" + last + "</font>"
+			var newtext = splitted.join(" ")
+			tagTexto.innerHTML = newtext + " " +  last
+		}
+	}
+	
+</script>
+
+</body>
+</html>
